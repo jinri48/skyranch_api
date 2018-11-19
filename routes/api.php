@@ -52,8 +52,8 @@ Route::post('/test',function(Request $request){
 });
 
 // Products or SiteParts
-Route::get('/siteparts', 'SitePartController@index'); 
+Route::get('/siteparts',		'SitePartController@index'); 
+Route::get('/sitepartsBranch', 	'SitePartController@getProductsByBranch'); 
+Route::post('/getProductById', 	'SitePartController@getProductById');
 
-Route::post('/getProductById', 'SitePartController@getProductById');
-
-Route::post('/addOrder', 'OrderSlipHeaderController@insertOrder');
+Route::post('/addOrder', 		'OrderSlipHeaderController@insertOrder');

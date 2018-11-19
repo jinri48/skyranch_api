@@ -48,8 +48,9 @@ class LoginController extends Controller
     	//check if on dutty
     	$c 		= new Clarion; 
     	$cce 	= new CCEOnDuty;
+        
     	// dd($c->today());
-    	if( is_null($cce->isOnDuty($request->username, $c->today() )) ){
+    	if( is_null($cce->isOnDuty($request->username, $c->today())) ){
     		return response()->json([
 	    		'success' 			=> false,
 	    		'status' 			=> 401,
@@ -57,6 +58,7 @@ class LoginController extends Controller
 	    	]);
     	}
 
+        $cce_onDuty = $cce->isOnDuty($request->username, $c->today());
         
     	//create a new token for new login
     	$newToken = UserSite::newToken($request->username);  
@@ -72,6 +74,7 @@ class LoginController extends Controller
     		'message' 			=> 'success',
     		'name' 				=> $us->NAME,
     		'token' 			=> $newToken,
+            'branch_id'         => $cce_onDuty->BRANCHID
     	]);
     }
 }
