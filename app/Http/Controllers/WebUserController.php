@@ -1,0 +1,17 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\WebUser;
+
+class WebUserController extends Controller
+{
+    //
+
+
+	
+
+
+
+}

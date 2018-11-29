@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\UserSite;
 use App\Clarion;
-use App\CCEOnDuty;
 use App\OrderLastIssuedNumber;
 use App\OrderSlipHeader;
 use App\OrderSlipDetails;
 use Carbon\Carbon;
+use App\Custom\CheckOnDuty;
 
 
 class OrderSlipHeaderController extends Controller
@@ -19,20 +19,26 @@ class OrderSlipHeaderController extends Controller
     public function insertOrder(Request $request){
 
 
-    	// $token = $request->header('token');
+    	$token = $request->header('token');
+
         // check if the user exists in the user by token
-        $token = $request->token;
+        // $token = $request->token;
     	$user = UserSite::findByToken($token);
-    	if(is_null($user)){
+    
+        if(is_null($user)){
     		return response()->json([
-    			'success' 	=> false
+    			'success' 	=> false,
+                'message'   => "Invalid Token"
     		]);
     	}
 
+
         // get the record if its his onduty for the day
-    	$cce = $this->checkOnDuty($user->NUMBER);
-    
-    	// check brand_id if exist on OrderLastIssu....
+    	//$cce = $this->checkOnDuty($user->NUMBER);
+
+        $cce = CheckOnDuty::cceOnDuty($user->NUMBER);
+       
+    	// check branH_id if exist on OrderLastIssu....
     	$cce_branch_id = $cce->BRANCHID;
     	$lastIssuedOrder =  OrderLastIssuedNumber::findByBranch($cce->BRANCHID);
     	$new_header=0; $new_details=0;
@@ -40,16 +46,17 @@ class OrderSlipHeaderController extends Controller
     	//if false make a new one with header=0 details=0
     	if (is_null($lastIssuedOrder)) {
 			$lastIssuedOrder = new OrderLastIssuedNumber();
-			$lastIssuedOrder->header_no 	= 0;
-			$lastIssuedOrder->details_no	= 0; 
-			$lastIssuedOrder->branch_id 	= $cce_branch_id;  	
+			$lastIssuedOrder->order_slip_header_no 	= 0;
+			$lastIssuedOrder->order_slip_detail_no	= 0; 
+			$lastIssuedOrder->branch_id 	= $cce_branch_id; 	
+            $lastIssuedOrder->customer      = 0;
 			$lastIssuedOrder->save();
 			
-            $new_header  =  $lastIssuedOrder->header_no + 1;
-            $new_details =  $lastIssuedOrder->details_no;
+            $new_header  =  $lastIssuedOrder->order_slip_header_no + 1;
+            $new_details =  $lastIssuedOrder->order_slip_detail_no;
     	}else{ 	//if true, get the current header and details
-    		$new_header  =  $lastIssuedOrder->header_no + 1;
-    		$new_details =  $lastIssuedOrder->details_no;
+    		$new_header  =  $lastIssuedOrder->order_slip_header_no + 1;
+    		$new_details =  $lastIssuedOrder->order_slip_detail_no;
             //lastIssuedOrder->branch_id = $cce_branch_id; 
     	}
         
@@ -65,6 +72,8 @@ class OrderSlipHeaderController extends Controller
         $order_header->ENCODEDBY    = (int) $user->NUMBER;
         $order_header->PREPAREDBY   = trim($user->NAME);
         $order_header->CCENAME      = trim($user->NAME);
+        $order_header->TRANSACTTYPEID = 2;
+        $order_header->CUSTOMER_ID  = $request->customer_no;
         $order_header->save();
          
     	//save the items into details using the new header_no from above and user the details_no = details_no + 1   
@@ -91,8 +100,8 @@ class OrderSlipHeaderController extends Controller
         
 
         //save the last issued number[ header and details ] for the branch in OrderLastIssuedNumber
-        $lastIssuedOrder->header_no     = $new_header;
-        $lastIssuedOrder->details_no    = $new_details;   
+        $lastIssuedOrder->order_slip_header_no    = $new_header;
+        $lastIssuedOrder->order_slip_detail_no    = $new_details;   
         $lastIssuedOrder->save();  
 
 
@@ -102,25 +111,13 @@ class OrderSlipHeaderController extends Controller
         //     'branch_id'    => $cce->BRANCHID,
         //     'order_slip_no'=> $new_header
         // ]);
+
         return response()->json([
             'success'   => true,
-            'status'    => 200
+            'status'    => 200, 
+            'order_header' => sprintf("%'.02d", $order_header->ORDERSLIPNO)
         ]);
 
-    }
-
-    public function checkOnDuty($number){
-    	//check if on duty
-        $c      = new Clarion;      
-        $cce    = new CCEOnDuty;     
-
-        $result = $cce->isOnDuty(trim($number), $c->today() );
-        if( is_null($result) ){
-            return false;
-        }  
-        return $result;
-    }
-
-
+    }   
 
 }

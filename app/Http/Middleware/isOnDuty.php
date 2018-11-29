@@ -20,7 +20,9 @@ class isOnDuty
     public function handle($request, Closure $next)
     {
         //check token
-        $user = UserSite::findByToken($request->header('token'));
+        // dd($request->header('token'));
+        // $user = UserSite::findByToken($request->get('token'));     
+        $user = UserSite::findByToken($request->header('token'));     
         if(is_null($user) || $request->header('token')==null){
             return response()->json([
                 'success'           => false,
@@ -35,11 +37,13 @@ class isOnDuty
          
 
         if( is_null($cce->isOnDuty(trim($user->NUMBER), $c->today() )) ){
+
             return response()->json([
                 'success'           => false,
                 'status'            => 401,
                 'message'           => 'Not on Duty!'
             ]);
+
         }
 
         return $next($request);

@@ -1,12 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 
+
 use App\UserSite;
-use App\CCEOnDuty;
-use App\Clarion;
+use App\Custom\CheckOnDuty;
 
 use Validator;
 
@@ -27,7 +26,7 @@ class LoginController extends Controller
     	$us = UserSite::findByNumber($request->username);
 
     	//check if the username is not exist
-    	if( is_null($us) ){
+    	if(is_null($us) ){
     		return response()->json([
 	    		'success' 			=> false,
 	    		'status' 			=> 401,
@@ -36,7 +35,7 @@ class LoginController extends Controller
     	}
 
     	//check the password is not match 
-    	if( trim($us->PW) != $request->password){
+    	if(trim($us->PW) != $request->password){
     		return response()->json([
 	    		'success' 			=> false,
 	    		'status' 			=> 401,
@@ -46,20 +45,18 @@ class LoginController extends Controller
 
 
     	//check if on dutty
-    	$c 		= new Clarion; 
-    	$cce 	= new CCEOnDuty;
+       
+        $cce_onDuty = CheckOnDuty::cceOnDuty($request->username);
         
-    	// dd($c->today());
-    	if( is_null($cce->isOnDuty($request->username, $c->today())) ){
-    		return response()->json([
-	    		'success' 			=> false,
-	    		'status' 			=> 401,
-	    		'message' 			=> 'Not on Duty!'
-	    	]);
-    	}
-
-        $cce_onDuty = $cce->isOnDuty($request->username, $c->today());
-        
+        // cce is not on duty
+        if ($cce_onDuty == false) {
+           return response()->json([
+                'success'           => false,
+                'status'            => 401,
+                'message'           => 'Not on Duty!'
+            ]);
+        }
+       
     	//create a new token for new login
     	$newToken = UserSite::newToken($request->username);  
 
