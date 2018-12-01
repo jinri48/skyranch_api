@@ -29,23 +29,23 @@ class CustomerController extends Controller
 		// meaning the customer was registered at that branch
 		$cce = CheckOnDuty::cceOnDuty($user->NUMBER);
 		$cce_branch_id = $cce->BRANCHID;
-    	$lastIssuedOrder =  OrderLastIssuedNumber::findByBranch($cce->BRANCHID);
+		$lastIssuedOrder =  OrderLastIssuedNumber::findByBranch($cce->BRANCHID);
 
     	// if theres no existing customer in the branch
-    	if (is_null($lastIssuedOrder)) {
+		if (is_null($lastIssuedOrder)) {
 
-    		$lastIssuedOrder = new OrderLastIssuedNumber();
-    		$lastIssuedOrder->order_slip_header_no 	= 0;
+			$lastIssuedOrder = new OrderLastIssuedNumber();
+			$lastIssuedOrder->order_slip_header_no 	= 0;
 			$lastIssuedOrder->order_slip_detail_no	= 0; 
 			$lastIssuedOrder->branch_id 			= $cce_branch_id;  	
 			$lastIssuedOrder->customer_no 			= 1;
 			$lastIssuedOrder->save();
 
-    	}else{
-    		$new_customer_no = $lastIssuedOrder->customer_no + 1;
-    		$lastIssuedOrder->customer_no = $new_customer_no;
-    		$lastIssuedOrder->save();
-    	}
+		}else{
+			$new_customer_no = $lastIssuedOrder->customer_no + 1;
+			$lastIssuedOrder->customer_no = $new_customer_no;
+			$lastIssuedOrder->save();
+		}
 
 		
     	// add first to the web_users 
@@ -74,12 +74,12 @@ class CustomerController extends Controller
 
 		return response()->json([
 			'success'   => true,
-            'status'    => 200,
-            'message' 	=> "Successfully added a new customer",
-            'data'		=> [
-            	'user_id' => $customer->user_id,  
-            	'customer_id' => $customer->CUSTOMERID  
-            ]
+			'status'    => 200,
+			'message' 	=> "Successfully added a new customer",
+			'data'		=> [
+				'user_id' => $customer->user_id,  
+				'customer_id' => $customer->CUSTOMERID  
+			]
 			
 		]);
 	}
@@ -89,15 +89,22 @@ class CustomerController extends Controller
 		Search customer thru name and 
 	*/
 
-	public function searchCustomer(Request $request){
+		public function searchCustomer(Request $request){
 			$search_value = $request->get('search_value');
-			$customer = Customer::where('NAME','LIKE', '%'.$search_value.'%')
+			$customer = Customer::with('user')
+						->where('NAME','LIKE', '%'.$search_value.'%')
 						->orwhere('mobile_number',  '=', $search_value )
     					->paginate();
 
-    		return response()->json([
-    			'data' => $customer
-    		]);
+			if (is_null($customer)) {
+
+			}
+
+			return response()->json([
+				'success'   => true,
+				'status'    => 200,
+				'data' => $customer
+			]);
 
 		}
 	}
