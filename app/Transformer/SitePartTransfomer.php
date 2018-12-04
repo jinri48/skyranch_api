@@ -16,7 +16,7 @@ class SitePartTransformer{
 			'part_no'		=> trim($value->PARTNO),
 			'status'		=> $value->STATUS,	
 			'retail_price'	=> $value->RETAIL,
-			'img_url'		=> $value->IMG_URL
+			'img_url'		=> $value->IMAGE
 			];
 
 			return $newData;

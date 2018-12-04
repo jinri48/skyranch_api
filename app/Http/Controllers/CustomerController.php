@@ -92,13 +92,9 @@ class CustomerController extends Controller
 		public function searchCustomer(Request $request){
 			$search_value = $request->get('search_value');
 			$customer = Customer::with('user')
-						->where('NAME','LIKE', '%'.$search_value.'%')
-						->orwhere('mobile_number',  '=', $search_value )
-    					->paginate();
-
-			if (is_null($customer)) {
-
-			}
+					->where('NAME','LIKE', '%'.$search_value.'%')
+					->orwhere('mobile_number',  '=', $search_value )
+					->Paginate();
 
 			return response()->json([
 				'success'   => true,
@@ -106,5 +102,24 @@ class CustomerController extends Controller
 				'data' => $customer
 			]);
 
+		}
+
+		public function customerPhoneExists(Request $request){
+			$search_value = $request->get('search_value');
+			$customer = Customer::where('mobile_number', '=', $search_value)
+			->first();
+			if (is_null($customer)) {
+				return response()->json([
+					'success'   => true,
+					'status'    => 200,
+					'data' 		=> false
+				]);
+			}
+			
+			return response()->json([
+				'success'   => true,
+				'status'    => 200,
+				'data' 		=> true
+			]);
 		}
 	}
