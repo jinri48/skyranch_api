@@ -53,10 +53,9 @@ Route::post('/test',function(Request $request){
 
 // Products or SiteParts
 Route::get('/siteparts',		'SitePartController@index')->middleware('isOnDuty'); 
-
 Route::get('/sitepartsBranch', 	'SitePartController@getProductsByBranch')->middleware('isOnDuty'); 
-
 Route::post('/getProductById', 	'SitePartController@getProductById')->middleware('isOnDuty');
+Route::get('/getProductGroups', 'GroupController@index');
 
 // ordering
 Route::post('/addOrder', 		'OrderSlipHeaderController@insertOrder')->middleware('isOnDuty');
@@ -65,4 +64,6 @@ Route::post('/addOrder', 		'OrderSlipHeaderController@insertOrder')->middleware(
 Route::get('/getCustomer', 		'CustomerController@searchCustomer')->middleware('isOnDuty');
 Route::post('/phoneExist', 		'CustomerController@customerPhoneExists')->middleware('isOnDuty');
 Route::post('/newCustomer', 	'CustomerController@createNewCustomer')->middleware('isOnDuty');
+
+
 
