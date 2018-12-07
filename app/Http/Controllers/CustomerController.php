@@ -25,11 +25,20 @@ class CustomerController extends Controller
 			]);
 		}
 
+		if($this->phoneChecker($request->mobile_number)){
+			return response()->json([
+					'success'   => false,
+					'status'    => 200,
+					'message'   => "Mobile Number Exists"
+			]);
+		}
+
 		// to get the arnoc of the on duty 
 		// meaning the customer was registered at that branch
 		$cce = CheckOnDuty::cceOnDuty($user->NUMBER);
 		$cce_branch_id = $cce->BRANCHID;
 		$lastIssuedOrder =  OrderLastIssuedNumber::findByBranch($cce->BRANCHID);
+
 
     	// if theres no existing customer in the branch
 		if (is_null($lastIssuedOrder)) {
@@ -106,9 +115,17 @@ class CustomerController extends Controller
 
 		public function customerPhoneExists(Request $request){
 			$search_value = $request->get('search_value');
-			$customer = Customer::where('mobile_number', '=', $search_value)
-			->first();
-			if (is_null($customer)) {
+			// $customer = Customer::where('mobile_number', '=', $search_value)
+			// ->first();
+			// if (is_null($customer)) {
+			// 	return response()->json([
+			// 		'success'   => true,
+			// 		'status'    => 200,
+			// 		'data' 		=> false
+			// 	]);
+			// }
+
+			if( !$this->phoneChecker($search_value) ){
 				return response()->json([
 					'success'   => true,
 					'status'    => 200,
@@ -121,5 +138,16 @@ class CustomerController extends Controller
 				'status'    => 200,
 				'data' 		=> true
 			]);
+		}
+
+		private function phoneChecker($mobile_number){
+			$customer = Customer::where('mobile_number', $mobile_number)
+							->first();
+
+			if (is_null($customer)) {
+				return false;
+			}
+
+			return true;
 		}
 	}

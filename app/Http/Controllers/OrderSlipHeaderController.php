@@ -73,7 +73,9 @@ class OrderSlipHeaderController extends Controller
         $order_header->PREPAREDBY   = trim($user->NAME);
         $order_header->CCENAME      = trim($user->NAME);
         $order_header->TRANSACTTYPEID = 2;
-        $order_header->CUSTOMER_ID  = $request->customer_no;
+        $order_header->CUSTOMERCODE  = $request->customer_no;
+        $order_header->CUSTOMERNAME = $request->customer_name;
+        $order_header->CELLULARNUMBER = $request->customer_mobile;
         $order_header->save();
          
     	//save the items into details using the new header_no from above and user the details_no = details_no + 1   
@@ -90,6 +92,10 @@ class OrderSlipHeaderController extends Controller
             $order_details->QUANTITY            = $item['qty'];         
             $order_details->RETAILPRICE         = $item['product_retail_price'];
             $order_details->AMOUNT              = $item['subtotal'];
+            $order_details->ISPERCENT           = 0;
+            $order_details->DISCOUNT            = 0;
+            $order_details->NETAMOUNT           = $order_details->AMOUNT - $order_details->DISCOUNT;
+
             // return response()->json([
             //     'success'   => false,
             //     'od'        => $order_details

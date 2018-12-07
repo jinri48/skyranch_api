@@ -7,6 +7,7 @@ class SitePartTransformer{
 	public function siteParts($data){
 
 		$data->getCollection()->transform(function ($value){
+			$url = config('app.main_api_url').$value->IMAGE;
 			$newData = [
 			'arnoc' 		=> $value->ARNOC, 
 			'product_id' 	=> $value->PRODUCT_ID,
@@ -16,7 +17,7 @@ class SitePartTransformer{
 			'part_no'		=> trim($value->PARTNO),
 			'status'		=> $value->STATUS,	
 			'retail_price'	=> $value->RETAIL,
-			'img_url'		=> $value->IMAGE
+			'img_url'		=> $url
 			];
 
 			return $newData;
