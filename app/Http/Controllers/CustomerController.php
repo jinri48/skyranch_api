@@ -36,12 +36,14 @@ class CustomerController extends Controller
     				'message' 	=> "Invalid Token"
     			]);
     		}
-
-    		if($this->phoneChecker($request->mobile_number)){
+            $isExisting = $this->phoneChecker($request->mobile_number);
+           
+    		if($isExisting){
     			return response()->json([
     					'success'   => false,
     					'status'    => 200,
-    					'message'   => "Mobile Number Exists"
+    					'message'   => "Mobile Number Exists",
+                        'number'    => $request->mobile_number
     			]);
     		}
 
@@ -99,11 +101,14 @@ class CustomerController extends Controller
 
     		//send sms
     		$sms = new SmsServices;
+            
     		$sms->welcomeMessage($request->mobile_number);
 
     		//send email
     		$mail= new MailServices;
     		$mail->welcomeMessage($request->email, $request->name);
+
+
 
     		
             //==========================
