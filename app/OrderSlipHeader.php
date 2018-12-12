@@ -12,6 +12,8 @@ class OrderSlipHeader extends Model
     protected $connection 		= 'sqlsrvHODB';
     public $timestamps 			= false;
 
+
+   
     
     
 

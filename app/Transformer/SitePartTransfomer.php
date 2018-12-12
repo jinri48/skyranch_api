@@ -5,7 +5,7 @@ namespace App\Transformer;
 class SitePartTransformer{
 
 	public function siteParts($data){
-
+		
 		$data->getCollection()->transform(function ($value){
 			$url = config('app.main_api_url').$value->IMAGE;
 			$newData = [
@@ -28,6 +28,7 @@ class SitePartTransformer{
 
 
 	public function sitePart($data){ 
+
 		$newData = [
 			'arnoc' 		=> (int) $data->ARNOC, 
 			'product_id' 	=> (int) $data->PRODUCT_ID,

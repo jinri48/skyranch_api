@@ -63,9 +63,12 @@ Route::post('/addOrder', 		'OrderSlipHeaderController@insertOrder')->middleware(
 //customer
 Route::get('/getCustomer', 		'CustomerController@searchCustomer')->middleware('isOnDuty');
 Route::post('/phoneExist', 		'CustomerController@customerPhoneExists');
-Route::post('/newCustomer', 	'CustomerController@createNewCustomer');
 
+// parameters [ h:token, mobile_number, name, email, bday ]
+Route::post('/newCustomer', 	'CustomerController@createNewCustomer'); 
 
+ 
 //sales 
 Route::post('/getSalesHistory', 'SalesHistoryController@getSalesHistory');
 Route::post('/getSalesTotal', 	'SalesHistoryController@getSalesTotal');
+Route::post('/order-slip/header/{id}/details', 		'OrderSlipController@detailsPerHeader'); //param[ header:token]
