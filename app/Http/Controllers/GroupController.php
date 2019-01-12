@@ -9,7 +9,9 @@ class GroupController extends Controller
 {
     public function index(){
     		
-    	$product_groups = Group::get();
+    	$product_groups = Group::
+    		whereNotIn("GROUPCODE", array(12,13))
+    		->get();
 
     	return response()->json([
     		'success' => "true",

@@ -21,7 +21,8 @@ class OrderSlipHeaderTransformer
 			}else{
 				$customerID = $customer->CUSTOMERID;
 				$customerName = $customer->NAME;
-				$customerMobile = $customer->mobile_number;
+				// $customerMobile = $customer->mobile_number;
+				$customerMobile = $customer->MOBILE_NUMBER;
 			}
 
 			$newData = [
@@ -63,7 +64,8 @@ class OrderSlipHeaderTransformer
 		}else{
 			$customerID = $customer->CUSTOMERID;
 			$customerName = $customer->NAME;
-			$customerMobile = $customer->mobile_number;
+			// $customerMobile = $customer->mobile_number;
+			$customerMobile = $customer->MOBILE_NUMBER;
 		}
 	
 		$newData = [
@@ -80,7 +82,7 @@ class OrderSlipHeaderTransformer
 			'customer'			=>[
 									'id'   		 => $customerID,
 									'name' 		 => $customerName,
-									'mobile_num' =>$customerMobile	
+									'mobile_num' => $customerMobile	
 								],
 			'customer_name'		=> $data->CUSTOMERNAME,				
 			'cellular_number'	=> trim($data->CELLULARNUMBER),

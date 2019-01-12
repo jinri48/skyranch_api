@@ -6,41 +6,13 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\OrderSlipHeader;
 use App\Customer;
-use App\UserSite;
-use App\Custom\CheckOnDuty;
 use App\Transformer\OrderSlipHeaderTransformer;
-
 class SalesHistoryController extends Controller
 {
 
  
 	public function getSalesTotal(Request $request){
-		//==========================
-		$token 	= $request->header('token'); 
 
-		$user = UserSite::findByToken($token);
-		if(is_null($user)){
-			return response()->json([
-				'success' 	=> false,
-				'status'	=> 200,
-				'message' 	=> "Invalid Token"
-			]);
-		}
-		
-		$cce_onDuty = CheckOnDuty::cceOnDuty($user->NUMBER);
-		
-		
-		if ($cce_onDuty == false) {
-           return response()->json([
-                'success'           => false,
-                'status'            => 401,
-                'message'           => 'Not on Duty!'
-            ]);
-        }
-
-        $cce_number 	= $user->NUMBER;
-
-        //==========================
 		$isToday = $request->isToday;
 		$from 	= null;
 		$to 	= null;
@@ -73,14 +45,9 @@ class SalesHistoryController extends Controller
 			$to = Carbon::create($to->year, $to->month, $to->day, 23, 59, 59);	
 
 		}
-
-		/*
-			$cce_num = $request->cce_num;
-			$cce_branch = $request->cce_branch;
-		*/
-
-		$cce_num =  $cce_number;
-		$cce_branch = $cce_onDuty->BRANCHID; 
+		
+		$cce_num = $request->cce_num;
+		$cce_branch = $request->cce_branch; 
 
 		//$result = OrderSlipHeader::whereBetween('OSDATE', [$from, $to])->get();
 		$result = OrderSlipHeader::where('OSDATE', '>=', $from)
@@ -105,37 +72,12 @@ class SalesHistoryController extends Controller
 
 	public function getSalesHistory(Request $request){
 		
-        //==========================
-		$token 	= $request->header('token'); 
-
-		$user = UserSite::findByToken($token);
-		if(is_null($user)){
-			return response()->json([
-				'success' 	=> false,
-				'status'	=> 200,
-				'message' 	=> "Invalid Token"
-			]);
-		}
-		
-		$cce_onDuty = CheckOnDuty::cceOnDuty($user->NUMBER);
-		
-		
-		if ($cce_onDuty == false) {
-           return response()->json([
-                'success'           => false,
-                'status'            => 401,
-                'message'           => 'Not on Duty!'
-            ]);
-        }
-		
-
-        $cce_number 	= $user->NUMBER;
-
 		$customer_name 	= $request->customer_name;		
 		$order_no 		= $request->os_header_no;
-		$cce_num 		= $cce_number;
-		$cce_branch 	= $cce_onDuty->BRANCHID;
+		$cce_num 		= $request->cce_num;
+		$cce_branch 	= $request->cce_branch; 
 		$status 		= $request->status;
+
 		$isToday 		= $request->isToday;
 		// $from 			= Carbon::now();
 		// $to 			= Carbon::now();

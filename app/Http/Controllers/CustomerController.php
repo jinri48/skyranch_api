@@ -36,8 +36,8 @@ class CustomerController extends Controller
     				'message' 	=> "Invalid Token"
     			]);
     		}
+            /* check if the phone already been used for registration */
             $isExisting = $this->phoneChecker($request->mobile_number);
-           
     		if($isExisting){
     			return response()->json([
     					'success'   => false,
@@ -46,6 +46,18 @@ class CustomerController extends Controller
                         'number'    => $request->mobile_number
     			]);
     		}
+
+             /* check if the email already been used for registration */
+            $isExisting = $this->emailChecker($request->email);
+
+            if($isExisting){
+                return response()->json([
+                        'success'   => false,
+                        'status'    => 200,
+                        'message'   => "Email exists",
+                        'email'    => $request->email
+                ]);
+            }
 
     		// to get the arnoc of the on duty 
     		// meaning the customer was registered at that branch
@@ -90,9 +102,9 @@ class CustomerController extends Controller
     		$customer->BRANCHID 		= $cce->BRANCHID; 
     		$customer->CUSTOMERID		= $new_customer_no;
     		$customer->NAME 			= $web_user->name; 
-    		$customer->user_id 			= $user_id;
-    		$customer->mobile_number 	= $request->mobile_number;
-    		$customer->birthdate 		= $request->bday;
+    		$customer->USER_ID 			= $user_id;
+    		$customer->MOBILE_NUMBER 	= $request->mobile_number;
+    		$customer->BIRTHDATE 		= $request->bday;
     		$customer->is_loyalty 		= $request->is_loyalty;
     		$customer->is_inhouse 		= 0;
     		$customer->wallet 			= 0;
@@ -149,7 +161,7 @@ class CustomerController extends Controller
 		$search_value = $request->get('search_value');
 		$customer = Customer::with('user')
 				->where('NAME','LIKE', '%'.$search_value.'%')
-				->orwhere('mobile_number',  '=', $search_value )
+				->orwhere('MOBILE_NUMBER',  '=', $search_value )
 				->Paginate();
 
 		return response()->json([
@@ -187,7 +199,7 @@ class CustomerController extends Controller
 	}
 
 	private function phoneChecker($mobile_number){
-		$customer = Customer::where('mobile_number', $mobile_number)
+		$customer = Customer::where('MOBILE_NUMBER', $mobile_number)
 						->first();
 
 		if (is_null($customer)) {
@@ -196,4 +208,17 @@ class CustomerController extends Controller
 
 		return true;
 	}
+
+    private function emailChecker($email){
+        $emailTest = Customer::whereHas('user', function($user) use ($email){
+            $user->where('email', $email);
+        })->with('user')->first();
+
+        if (is_null($emailTest)) {
+           return false;
+        }
+
+        return true;
+
+    }
 }

@@ -13,6 +13,7 @@ class Clarion extends Model
 	public function today(){
 		$start = Carbon::parse($this->start_date);
 		$now = Carbon::now(); 
+		
 		$dateDiff = $now->diffInDays($start) + 4;
 		return $dateDiff;
 	}
