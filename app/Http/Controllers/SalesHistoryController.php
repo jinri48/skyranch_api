@@ -88,6 +88,7 @@ class SalesHistoryController extends Controller
 								->where('TRANSACTTYPEID', '=', 2)
 								->where('ENCODEDBY', '=', $cce_num)
 								->where('BRANCHID' , '=', $cce_branch)
+								->where('STATUS', 'C' )
 								->get();
 
 		$netAmount = $result->sum('TOTALAMOUNT');

@@ -48,16 +48,22 @@ class CustomerController extends Controller
     		}
 
              /* check if the email already been used for registration */
-            $isExisting = $this->emailChecker($request->email);
 
-            if($isExisting){
-                return response()->json([
-                        'success'   => false,
-                        'status'    => 200,
-                        'message'   => "Email exists",
-                        'email'    => $request->email
-                ]);
+            /*if $request->email  is not empty*/
+
+            if (!is_null($request->email)) {
+                $isExisting = $this->emailChecker($request->email);
+
+                if($isExisting){
+                    return response()->json([
+                            'success'   => false,
+                            'status'    => 200,
+                            'message'   => "Email exists",
+                            'email'    => $request->email
+                    ]);
+                }
             }
+
 
     		// to get the arnoc of the on duty 
     		// meaning the customer was registered at that branch
