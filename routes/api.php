@@ -75,3 +75,4 @@ Route::post('/order-slip/header/{id}/details', 		'OrderSlipController@detailsPer
 
 
 Route::get('/onduty', 'CCEOnDutyController@isOnDuty');
+// Route::post('/getSalesHistoryAll', 	'SalesHistoryController@getSalesHistoryAll');
