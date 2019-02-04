@@ -16,7 +16,7 @@ class SitePartController extends Controller
     	$search_value = $request->get('search_value');
 
     	$sitePart = SitePart::where('DESCRIPTION','LIKE', '%'.$search_value.'%')
-                        ->orderBy('PRODUCT_ID','DESC')
+                        ->orderBy('PRODUCT_ID','ASC')
     					->paginate();
 
     	$spt = new SitePartTransformer;
@@ -35,28 +35,24 @@ class SitePartController extends Controller
         $search_value = $request->get('search_value');
         $branch_id = $request->get('arnoc');
         $product_group = $request->get('group_cat');
-
-        
-
+        $location = $request->get('location');
 
        // dd($request->get('page'),$request->get('arnoc'),$search_value);
         //?page=1,arnoc=1
         if (is_null($branch_id)) { // get all products
             $sitePart = SitePart::where('DESCRIPTION','LIKE', '%'.$search_value.'%')
-                ->orderBy('PRODUCT_ID','DESC')
+               
                 ->Paginate();
         }else{ //get all products by branch
 
             if (is_null($product_group)) {
                 $sitePart = SitePart::where('DESCRIPTION','LIKE', '%'.$search_value.'%')
                 ->where('ARNOC', $branch_id)
-                ->orderBy('PRODUCT_ID','DESC')
                 ->Paginate();    
             }else{
                 $sitePart = SitePart::where('DESCRIPTION','LIKE', '%'.$search_value.'%')
                 ->where('ARNOC', $branch_id)
                 ->where('GROUP', $product_group)
-                ->orderBy('PRODUCT_ID','DESC')
                 ->Paginate();
 
             }
@@ -93,6 +89,83 @@ class SitePartController extends Controller
         ]);
     }
 
+
+    public function getProductsByLocBranch(Request $request){
+        //search_value 
+        $search_value = $request->get('search_value');
+        $branch_id = $request->get('arnoc');
+        $product_group = $request->get('group_cat');
+        $location = $request->get('location');
+
+       // dd($request->get('page'),$request->get('arnoc'),$search_value);
+        //?page=1,arnoc=1
+        
+    
+        if (is_null($location)) {
+             return response()->json([
+                'success' => "false",
+                'status'  => 200,
+                'message'   => "location is required"
+            ]);
+        }
+
+        /*location 1 = admission / rides */
+        if ($location == 1 && is_null($product_group)) {
+            $sitePart = SitePart::where('DESCRIPTION','LIKE', '%'.$search_value.'%')
+            ->where('ARNOC', $branch_id)
+            ->whereIn('BSUNITCODE', array(103, 104))
+            ->Paginate();
+            
+        }else if ($location == 1 && !is_null($product_group)) {
+            $sitePart = SitePart::where('DESCRIPTION','LIKE', '%'.$search_value.'%')
+            ->where('ARNOC', $branch_id)
+            ->whereIn('BSUNITCODE', array(103, 104))
+            ->where('GROUP', $product_group)
+            ->Paginate();
+
+        /*location 2 = food / restaurant*/
+        }else if ($location == 2 && is_null($product_group)) {
+            $sitePart = SitePart::where('DESCRIPTION','LIKE', '%'.$search_value.'%')
+            ->where('ARNOC', $branch_id)
+            ->whereIn('BSUNITCODE', array(102))
+            ->where('RETAIL', '>', 0)
+            ->Paginate();
+
+        }else if ($location == 2 && !is_null($product_group)) {
+            $sitePart = SitePart::where('DESCRIPTION','LIKE', '%'.$search_value.'%')
+            ->where('ARNOC', $branch_id)
+            ->whereIn('BSUNITCODE', array(102))
+            ->where('GROUP', $product_group)
+            ->Paginate();
+        
+         /*location 3 = souvenir / merchandise */
+        } else if ($location == 3 && is_null($product_group)) {
+             $sitePart = SitePart::where('DESCRIPTION','LIKE', '%'.$search_value.'%')
+            ->where('ARNOC', $branch_id)
+            ->whereIn('BSUNITCODE', array(101, 104))
+            ->Paginate();
+
+        }else if ($location == 3 && !is_null($product_group)) {
+            $sitePart = SitePart::where('DESCRIPTION','LIKE', '%'.$search_value.'%')
+            ->where('ARNOC', $branch_id)
+            ->whereIn('BSUNITCODE', array(101, 104))
+            ->where('GROUP', $product_group)
+            ->Paginate();
+        }
+      
+        $spt = new SitePartTransformer;
+        $newData = $spt->siteParts($sitePart); 
+
+        return response()->json([
+            'success'   => true,
+            'status'    => 200,
+            'message'   => 'success',
+            'data'      => $newData
+        ]);
+
+
+
+    }
 
 
 

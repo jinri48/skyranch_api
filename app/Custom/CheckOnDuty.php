@@ -16,7 +16,7 @@ class CheckOnDuty
     	//check if on duty
         $c      = new Clarion;      
         $cce    = new CCEOnDuty;     
-
+        
         $result = $cce->isOnDuty(trim($number), $c->today() );
         if(is_null($result) ){
             return false;	

@@ -8,7 +8,7 @@ class OrderSlipHeaderTransformer
 {
 	
 	public function osHeaders($data){
-		
+
 		$data->getCollection()->transform(function ($value){
 			
 			$customer = Customer::where('CUSTOMERID',$value->CUSTOMERCODE)
@@ -21,7 +21,7 @@ class OrderSlipHeaderTransformer
 			}else{
 				$customerID = $customer->CUSTOMERID;
 				$customerName = $customer->NAME;
-				$customerMobile = $customer->mobile_number;
+				$customerMobile = $customer->MOBILE_NUMBER;
 			}
 
 			$newData = [
@@ -63,7 +63,8 @@ class OrderSlipHeaderTransformer
 		}else{
 			$customerID = $customer->CUSTOMERID;
 			$customerName = $customer->NAME;
-			$customerMobile = $customer->mobile_number;
+			// $customerMobile = $customer->mobile_number;
+			$customerMobile = $customer->MOBILE_NUMBER;
 		}
 	
 		$newData = [
@@ -91,4 +92,49 @@ class OrderSlipHeaderTransformer
 	} 
 
 
+	public function osHead($data){
+		
+		$data->transform(function ($value){
+			
+			$customer = Customer::where('CUSTOMERID',$value->CUSTOMERCODE)
+								->where('BRANCHID', $value->BRANCHID)
+								->first();
+			if (is_null($customer)) {
+				$customerID = NULL;
+				$customerName = NULL;
+				$customerMobile = NULL;
+			}else{
+				$customerID = $customer->CUSTOMERID;
+				$customerName = $customer->NAME;
+				$customerMobile = $customer->MOBILE_NUMBER;
+			}
+
+
+			$newData = [
+			'branch_id' 		=> $value->BRANCHID, 
+			'os_no' 			=> (int) $value->ORDERSLIPNO,
+			'os_date' 			=> $value->OSDATE,
+			'encoded_by'		=> (int) $value->ENCODEDBY,
+			'encoded_date'		=> $value->ENCODEDDATE,
+			'cce_name'			=> $value->CCENAME,
+			'transact_type_id'	=> (int) $value->TRANSACTTYPEID,
+			'total_amount'		=> (double) $value->TOTALAMOUNT,	
+			'discount'			=> (double) $value->DISCOUNT,
+			'net_amount'		=> (double) $value->NETAMOUNT,
+			'customer'			=>[
+									'id'   		 => $customerID,
+									'name' 		 => $customerName,
+									'mobile_num' => $customerMobile	
+								],
+			'customer_name'		=> $value->CUSTOMERNAME,					
+			'cellular_number'	=> $value->CELLULARNUMBER,
+			'status'			=> $value->STATUS,
+			'date_completed'	=> $value->DATECOMPLETED	
+			];
+
+			return $newData;
+			
+		});
+		return $data;
+	} 
 }

@@ -11,6 +11,18 @@ class SitePart extends Model
     protected $connection 		= 'sqlsrvHODB';
     public $timestamps 			= false;
 
-   
+   	
+   	// RELATIONSHIT
+
+   	public function components(){
+   		return $this->hasMany('App\PostMix','PRODUCT_ID','PRODUCT_ID');
+   	}
+
+   /* public function group(){
+      return $this->hasOne('App\Group', 'GROUPCODE');
+    }
+*/
+
+  	
 
 }

@@ -11,7 +11,7 @@ class Customer extends Model
 
 
     public function user(){
-    	return $this->belongsTo('App\WebUser','user_id');
+    	return $this->belongsTo('App\WebUser','USER_ID');
     }
 
     

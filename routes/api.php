@@ -65,10 +65,27 @@ Route::get('/getCustomer', 		'CustomerController@searchCustomer')->middleware('i
 Route::post('/phoneExist', 		'CustomerController@customerPhoneExists');
 
 // parameters [ h:token, mobile_number, name, email, bday ]
-Route::post('/newCustomer', 	'CustomerController@createNewCustomer'); 
+Route::post('/newCustomer', 	'CustomerController@createNewCustomer')->middleware('isOnDuty'); 
 
  
 //sales 
 Route::post('/getSalesHistory', 'SalesHistoryController@getSalesHistory');
 Route::post('/getSalesTotal', 	'SalesHistoryController@getSalesTotal');
-Route::post('/order-slip/header/{id}/details', 		'OrderSlipController@detailsPerHeader'); //param[ header:token]
+//param[ header:token]
+Route::post('/order-slip/header/{id}/details', 		'OrderSlipController@detailsPerHeader'); 
+
+
+Route::get('/getGroups', 			'GroupController@groups');
+
+// param [location] 
+Route::get('/getGroupsLoc', 		'GroupController@groupsLoc');
+
+/*all testing*/
+Route::get('/onduty', 				'CCEOnDutyController@isOnDuty');
+Route::post('/getSalesHistoryAll',	'SalesHistoryController@getSalesHistoryAll');
+Route::get('/sitePartsLoc', 		'SitePartController@getProductsByLocBranch')->middleware('isOnDuty'); 
+
+
+Route::get('/default', 'OrderSlipHeaderController@getClarionTime');
+
+Route::post('/createNewFoodOrder', 'OrderSlipHeaderController@insertFoodOrder');
