@@ -10,7 +10,7 @@ class UserSite extends Model
     //
     protected $table  			= 'UserSite';
     protected $primaryKey		= 'ID';
-    protected $connection 		= 'sqlsrvSiteDB';
+    protected $connection 		= 'sqlsrvHODB';
     public $timestamps 			= false;
  
     //logic 

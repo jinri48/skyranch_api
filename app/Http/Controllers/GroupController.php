@@ -46,14 +46,14 @@ class GroupController extends Controller
         }
 
         if ($location == 1) { //admission
-            $product_groups = Group::whereIn("BSUNITCODE", array(3,4))
+            $product_groups = Group::whereIn("BSUNITCODE", array(103,104))
             ->get();            
         }else if($location == 2){ // food
-            $product_groups = Group::whereIn("BSUNITCODE", array(2))
-                ->whereNotIn("GROUPCODE", array(12, 13))
+            $product_groups = Group::whereIn("BSUNITCODE", array(102))
+                ->whereIn("GROUPCODE", array(10201,10202,10206, 10207, 10211))
                 ->get();
         }else if ($location == 3) { // souvenir
-            $product_groups = Group::whereIn("BSUNITCODE", array(1, 4))
+            $product_groups = Group::whereIn("BSUNITCODE", array(101, 104))
                 ->get();
         }
 

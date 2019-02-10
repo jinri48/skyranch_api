@@ -11,6 +11,7 @@ use App\OrderSlipDetails;
 use Carbon\Carbon;
 use App\Custom\CheckOnDuty;
 use App\KitchenOrder;
+use App\SitePart;
 use DB;
 
 
@@ -399,7 +400,7 @@ class OrderSlipHeaderController extends Controller
                 $order_details->save();
                 
     
-
+                /*  
                 if ($item['postmix'] == 1) {
 
                   $lastIssuedOrder->kitchen_order_no = $lastIssuedOrder->kitchen_order_no  +1;
@@ -477,7 +478,7 @@ class OrderSlipHeaderController extends Controller
                   $kitchen_no = $lastIssuedOrder->kitchen_order_no;
                   $kitchen_order->ko_id           = $kitchen_no++;
                   $kitchen_order->save();  
-                }
+                }*/
              
                
               
@@ -540,7 +541,44 @@ class OrderSlipHeaderController extends Controller
                     }
                   }
                 }*/
-                
+              if ($item['postmix'] == 1) {
+                                foreach ($item['components'] as $component) {
+                                  if ($component['modifiable'] == 1 || $component['display']) {
+
+                                    $prod = SitePart::where("PRODUCT_ID", $component['component_id'])
+                                    ->where("ARNOC", $cce->BRANCHID)
+                                    ->first();
+
+                                    if (is_null($prod)) {
+                                      # code...
+                                    }
+                                    
+                                    $new_details = $new_details + 1 ;
+                                    $order_details = new OrderSlipDetails(); 
+                                    $order_details->BRANCHID            = $cce->BRANCHID;
+                                    $order_details->ORDERSLIPNO         = $new_header;
+                                    $order_details->ORDERSLIPDETAILID   = $new_details;
+                                    $order_details->ENCODEDDATE         = $now;
+                                    $order_details->PRODUCT_ID          = $component['component_id'];
+                                    $order_details->PARTNO              = $prod->PARTNO;
+                                    $order_details->PRODUCTGROUP        = $prod->GROUP;
+                                    $order_details->QUANTITY            = $component['qty'];         
+                                    $order_details->RETAILPRICE         = $component['price'];
+                                    $order_details->AMOUNT              = $component['subtotal'];
+                                    $order_details->ISPERCENT           = 0;
+                                    $order_details->DISCOUNT            = 0;
+                                    $order_details->CUSTOMERCODE        = $order_header->CUSTOMERCODE;
+                                    $order_details->NETAMOUNT           = $order_details->AMOUNT - $order_details->DISCOUNT;
+                                    $order_details->STATUS               = "P";
+                                    $order_details->OSTYPE              = $item['ordertype'];
+                                    
+                                    $order_details->ORNO                = $order_details->ORDERSLIPDETAILID;
+                                    $order_details->POSTMIXID           = $item['id'];  
+                                    
+                                    $order_details->save();
+                                  }
+                                }
+                              }
                 
             }
 

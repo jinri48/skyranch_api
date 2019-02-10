@@ -128,7 +128,7 @@ class CustomerController extends Controller
     		//send sms
     		$sms = new SmsServices;
             
-    		$sms->welcomeMessage($request->mobile_number);
+    		$sms->welcomeMessage('+63'.$request->mobile_number);
 
     		//send email
     		$mail= new MailServices;
