@@ -36,10 +36,13 @@ class CustomerController extends Controller
     				'message' 	=> "Invalid Token"
     			]);
     		}
+<<<<<<< HEAD
 
             /* check if the mobile number already been used for registration */
+=======
+            /* check if the phone already been used for registration */
+>>>>>>> 53f3bd2f58055f2bb006515642285623316a1042
             $isExisting = $this->phoneChecker($request->mobile_number);
-           
     		if($isExisting){
     			return response()->json([
     					'success'   => false,
@@ -49,9 +52,17 @@ class CustomerController extends Controller
     			]);
     		}
 
+<<<<<<< HEAD
 
             if(!is_null($request->email)){
                     /* check if the email already been used for registration */
+=======
+             /* check if the email already been used for registration */
+
+            /*if $request->email  is not empty*/
+
+            if (!is_null($request->email)) {
+>>>>>>> 53f3bd2f58055f2bb006515642285623316a1042
                 $isExisting = $this->emailChecker($request->email);
 
                 if($isExisting){
@@ -63,10 +74,13 @@ class CustomerController extends Controller
                     ]);
                 }
             }
+<<<<<<< HEAD
             
 
 
             
+=======
+>>>>>>> 53f3bd2f58055f2bb006515642285623316a1042
 
 
     		// to get the arnoc of the on duty 
@@ -213,7 +227,7 @@ class CustomerController extends Controller
 	}
 
 	private function phoneChecker($mobile_number){
-		$customer = Customer::where('mobile_number', $mobile_number)
+		$customer = Customer::where('MOBILE_NUMBER', $mobile_number)
 						->first();
 
 		if (is_null($customer)) {
@@ -223,7 +237,10 @@ class CustomerController extends Controller
 		return true;
 	}
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 53f3bd2f58055f2bb006515642285623316a1042
     private function emailChecker($email){
         $emailTest = Customer::whereHas('user', function($user) use ($email){
             $user->where('email', $email);

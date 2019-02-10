@@ -71,6 +71,7 @@ Route::post('/newCustomer', 	'CustomerController@createNewCustomer')->middleware
 //sales 
 Route::post('/getSalesHistory', 'SalesHistoryController@getSalesHistory');
 Route::post('/getSalesTotal', 	'SalesHistoryController@getSalesTotal');
+<<<<<<< HEAD
 //param[ header:token]
 Route::post('/order-slip/header/{id}/details', 		'OrderSlipController@detailsPerHeader'); 
 
@@ -89,3 +90,10 @@ Route::get('/sitePartsLoc', 		'SitePartController@getProductsByLocBranch')->midd
 Route::get('/default', 'OrderSlipHeaderController@getClarionTime');
 
 Route::post('/createNewFoodOrder', 'OrderSlipHeaderController@insertFoodOrder');
+=======
+Route::post('/order-slip/header/{id}/details', 		'OrderSlipController@detailsPerHeader'); //param[ header:token]
+
+
+Route::get('/onduty', 'CCEOnDutyController@isOnDuty');
+// Route::post('/getSalesHistoryAll', 	'SalesHistoryController@getSalesHistoryAll');
+>>>>>>> 53f3bd2f58055f2bb006515642285623316a1042

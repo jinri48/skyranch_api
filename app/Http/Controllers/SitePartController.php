@@ -16,7 +16,11 @@ class SitePartController extends Controller
     	$search_value = $request->get('search_value');
 
     	$sitePart = SitePart::where('DESCRIPTION','LIKE', '%'.$search_value.'%')
+<<<<<<< HEAD
                         ->orderBy('PRODUCT_ID','ASC')
+=======
+                        // ->orderBy('PRODUCT_ID','ASC')
+>>>>>>> 53f3bd2f58055f2bb006515642285623316a1042
     					->paginate();
 
     	$spt = new SitePartTransformer;
@@ -41,18 +45,36 @@ class SitePartController extends Controller
         //?page=1,arnoc=1
         if (is_null($branch_id)) { // get all products
             $sitePart = SitePart::where('DESCRIPTION','LIKE', '%'.$search_value.'%')
+<<<<<<< HEAD
                
+=======
+                // ->orderBy('PRODUCT_ID','DESC')
+                ->where('STATUS', 'A')
+                ->where('RETAIL', '>', 0)
+>>>>>>> 53f3bd2f58055f2bb006515642285623316a1042
                 ->Paginate();
         }else{ //get all products by branch
 
             if (is_null($product_group)) {
                 $sitePart = SitePart::where('DESCRIPTION','LIKE', '%'.$search_value.'%')
                 ->where('ARNOC', $branch_id)
+<<<<<<< HEAD
+=======
+                ->where('STATUS', 'A')
+                ->where('RETAIL', '>', 0)
+                // ->orderBy('PRODUCT_ID','DESC')
+>>>>>>> 53f3bd2f58055f2bb006515642285623316a1042
                 ->Paginate();    
             }else{
                 $sitePart = SitePart::where('DESCRIPTION','LIKE', '%'.$search_value.'%')
                 ->where('ARNOC', $branch_id)
                 ->where('GROUP', $product_group)
+<<<<<<< HEAD
+=======
+                ->where('STATUS', 'A')
+                ->where('RETAIL', '>', 0)
+                // ->orderBy('PRODUCT_ID','DESC')
+>>>>>>> 53f3bd2f58055f2bb006515642285623316a1042
                 ->Paginate();
 
             }
