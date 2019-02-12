@@ -10,22 +10,16 @@ use App\OrderSlipHeader;
 use App\OrderSlipDetails;
 use Carbon\Carbon;
 use App\Custom\CheckOnDuty;
-<<<<<<< HEAD
+
 use App\KitchenOrder;
 use App\SitePart;
-=======
->>>>>>> 53f3bd2f58055f2bb006515642285623316a1042
 use DB;
 
 
 class OrderSlipHeaderController extends Controller
 {
-<<<<<<< HEAD
-    //
 
-=======
     // not a transaction 
->>>>>>> 53f3bd2f58055f2bb006515642285623316a1042
    //  public function insertOrder(Request $request){
 
 
@@ -124,8 +118,6 @@ class OrderSlipHeaderController extends Controller
    //      $lastIssuedOrder->order_slip_header_no    = $new_header;
    //      $lastIssuedOrder->order_slip_detail_no    = $new_details;   
    //      $lastIssuedOrder->save();  
-<<<<<<< HEAD
-=======
 
 
    //  	//return a response for the status of transaction....
@@ -145,7 +137,7 @@ class OrderSlipHeaderController extends Controller
 
     // transaction
     public function insertOrder(Request $request){
-            try{
+      try{
 
                 //begin
                 DB::beginTransaction();
@@ -251,28 +243,19 @@ class OrderSlipHeaderController extends Controller
 
 
                 //return a response for the status of transaction....
->>>>>>> 53f3bd2f58055f2bb006515642285623316a1042
+
 
                 // dd([
                 //     'branch_id'    => $cce->BRANCHID,
                 //     'order_slip_no'=> $new_header
                 // ]);
 
-<<<<<<< HEAD
-   //  	//return a response for the status of transaction....
-
-   //      // dd([
-   //      //     'branch_id'    => $cce->BRANCHID,
-   //      //     'order_slip_no'=> $new_header
-   //      // ]);
-
-   //      return response()->json([
-   //          'success'   => true,
-   //          'status'    => 200, 
-   //          'order_header' => sprintf("%'.02d", $order_header->ORDERSLIPNO)
-   //      ]);
-
-   //  }   
+        return response()->json([
+            'success'   => true,
+            'status'    => 200, 
+            'order_header' => sprintf("%'.02d", $order_header->ORDERSLIPNO)
+        ]);
+      }   
 
     public function insertOrder(Request $request){
         try{
@@ -388,28 +371,8 @@ class OrderSlipHeaderController extends Controller
             //     'order_slip_no'=> $new_header
             // ]);
 
-            //==========================
-            //success 
-            DB::commit(); // this will save all the changes into the database before returning a response from the client.
-
-            return response()->json([
-                'success'   => true,
-                'status'    => 200, 
-                'order_header' => sprintf("%'.02d", $order_header->ORDERSLIPNO)
-            ]);
-
-        }catch(\Exception $e){
-            //fail
-            DB::rollback();
-
-            return response()->json([
-                    'success'   => false,
-                    'status'    => 200,
-                    'message'   => $e->getMessage()
-            ]);
-        }
-    }   
-=======
+       
+       
                 //==========================
                 //success 
                 DB::commit(); // this will save all the changes into the database before returning a response from the client.
@@ -431,7 +394,7 @@ class OrderSlipHeaderController extends Controller
                 ]);
             }
         }   
->>>>>>> 53f3bd2f58055f2bb006515642285623316a1042
+
 
 
     public function insertFoodOrder(Request $request){
